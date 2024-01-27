@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  consul:
+    image: consul:1.15.4
+    command: agent -dev -client=0.0.0.0
+    ports:
+      - "8500:8500"
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - "rabbitmq_data:/var/lib/rabbitmq"
+      - "rabbitmq_log:/var/log/rabbitmq"
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: test
+      MONGO_INITDB_ROOT_PASSWORD: 1234
+    volumes:
+      - "mongo_data:/data/db"
+    restart: always
+    networks:
+      - app-network
+
+volumes:
+  mongo_data:
+  rabbitmq_data:
+  rabbitmq_log:
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,23 @@
+{
+	"info": {
+		"_postman_id": "7f0ac44d-5827-448e-8dd4-32764ed3be85",
+		"name": "Micro-Node",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29447055"
+	},
+	"item": [
+		{
+			"name": "bikes",
+			"item": [
+				{
+					"name": "Retrieve all bikes",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
