@@ -1,6 +1,7 @@
 version: '3.8'
 services:
   consul:
+    container_name: consul
     image: consul:1.15.4
     command: agent -dev -client=0.0.0.0
     ports:
@@ -9,6 +10,7 @@ services:
       - app-network
 
   rabbitmq:
+    container_name: rabbitmq
     image: rabbitmq:3.11-management
     ports:
       - "5672:5672"
@@ -23,6 +25,7 @@ services:
       - app-network
 
   mongo:
+    container_name: mongo
     image: mongo:latest
     ports:
       - "27018:27017"
@@ -35,11 +38,59 @@ services:
     networks:
       - app-network
 
+  weather-service:
+    build: './WeatherService'
+    image: weather-service
+    container_name: weather-service
+    ports:
+      - "3002:3002"
+    networks:
+      - app-network
+    depends_on:
+      - consul
+      - rabbitmq
+
+  bike-service:
+    build: './BikeService'
+    image: bike-service
+    container_name: bike-service
+    ports:
+      - "3001:3001"
+    networks:
+      - app-network
+    depends_on:
+      - consul
+      - rabbitmq
+
+  data-aggregator-service:
+    build: './DataAggregatorService'
+    image: data-aggregator-service
+    container_name: data-aggregator-service
+    ports:
+      - "3003:3003"
+    networks:
+      - app-network
+    depends_on:
+      - consul
+      - rabbitmq
+    restart: always
+
+  react-app-service:
+    build: './bike_weather_dashboard_service'
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    volumes:
+      - react_data:/usr/src/app
+
 volumes:
   mongo_data:
   rabbitmq_data:
   rabbitmq_log:
+  react_data:
 
 networks:
   app-network:
     driver: bridge
+

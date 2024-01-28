@@ -2,12 +2,14 @@ const axios = require('axios');
 const amqp = require('amqplib');
 const Consul = require('consul');
 
-const consul = new Consul();
+const consul = new Consul({
+  host: 'consul'
+});
 const serviceName = "weather-service";
 const serviceId = `${serviceName}-${new Date().getTime()}`; 
 const port = 3002; 
 
-const rabbitMqServer = 'amqp://user:password@localhost:5672/';
+const rabbitMqServer = 'amqp://user:password@rabbitmq:5672/';
 const receiveQueue = 'bikeData';
 const sendQueue = 'weatherData';
 
@@ -15,10 +17,10 @@ const sendQueue = 'weatherData';
 consul.agent.service.register({
   id: serviceId,
   name: serviceName,
-  address: 'localhost',
+  address: 'weather-service',
   port: port,
   check: {
-    http: `http://localhost:${port}/health`,
+    http: `http://weather-service:${port}/health`,
     interval: '10s'
   }
 }, err => {

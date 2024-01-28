@@ -4,22 +4,24 @@ const Consul = require("consul");
 const cron = require("node-cron");
 const dotenv = require("dotenv").config();
 
-const consul = new Consul();
+const consul = new Consul({
+  host: 'consul'
+});
 const serviceName = "bike-service";
 const serviceId = `${serviceName}-${new Date().getTime()}`;
 const port = 3001;
 
-const rabbitMqServer = "amqp://user:password@localhost:5672/";
+const rabbitMqServer = "amqp://user:password@rabbitmq:5672/";
 const queue = "bikeData";
 
 consul.agent.service.register(
   {
     id: serviceId,
     name: serviceName,
-    address: "localhost",
+    address: serviceName,
     port: port,
     check: {
-      http: `http://localhost:${port}/health`,
+      http: `http://${serviceName}:${port}/health`,
       interval: "10s",
     },
   },

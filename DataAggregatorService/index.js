@@ -3,15 +3,17 @@ const mongoose = require("mongoose");
 const Consul = require("consul");
 const cors = require("cors");
 
-const consul = new Consul();
+const consul = new Consul({
+  host: 'consul'
+});
 const serviceName = "data-aggregator-service";
 const serviceId = `${serviceName}-${new Date().getTime()}`;
 const port = 3003;
 
-const rabbitMqServer = "amqp://user:password@localhost:5672/";
+const rabbitMqServer = "amqp://user:password@rabbitmq:5672/";
 const queue = "weatherData";
 
-const mongoDbUri = "mongodb://test:1234@localhost:27018/";
+const mongoDbUri = "mongodb://test:1234@mongo:27017/";
 
 mongoose.connect(mongoDbUri, {
   useNewUrlParser: true,
@@ -77,10 +79,10 @@ consul.agent.service.register(
   {
     id: serviceId,
     name: serviceName,
-    address: "localhost",
+    address: serviceName,
     port: port,
     check: {
-      http: `http://localhost:${port}/health`,
+      http: `http://${serviceName}:${port}/health`,
       interval: "10s",
     },
   },
@@ -122,7 +124,7 @@ async function processMessages() {
   });
 }
 
-processMessages();
+// processMessages();
 
 const express = require("express");
 const app = express();
