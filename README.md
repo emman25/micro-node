@@ -38,30 +38,5 @@ For this project, integrate a Bike information API and WeatherAPI from RapidAPI.
 docker compose up -d
 ```
 
-### Run Bike Service
-Navigate to the BikeService directory and start the service:
-```bash
-cd BikeService
-npm run start
-```
-
-### Run Weather Service
-Navigate to the WeatherService directory and start the service:
-```bash
-cd WeatherService
-npm run start
-```
-
-### Run Data Aggregator Service
-Navigate to the DataAggregatorService directory and start the service:
-```bash
-cd DataAggregatorService
-npm run start
-```
-
-### Run BikeWeather Dashboard
-Navigate to the BikeWeatherDashboard directory and start the dashboard:
-```bash
-cd BikeWeatherDashboard
-npm run start
-```
+### View Dashboard
+[localhost:3000](http://localhost:3000)

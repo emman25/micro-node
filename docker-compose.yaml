@@ -8,6 +8,13 @@ services:
       - "8500:8500"
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "consul", "members"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+    
 
   rabbitmq:
     container_name: rabbitmq
@@ -23,6 +30,12 @@ services:
       - "rabbitmq_log:/var/log/rabbitmq"
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
 
   mongo:
     container_name: mongo
@@ -49,6 +62,7 @@ services:
     depends_on:
       - consul
       - rabbitmq
+    restart: on-failure
 
   bike-service:
     build: './BikeService'
@@ -61,6 +75,7 @@ services:
     depends_on:
       - consul
       - rabbitmq
+    restart: on-failure
 
   data-aggregator-service:
     build: './DataAggregatorService'
@@ -73,7 +88,7 @@ services:
     depends_on:
       - consul
       - rabbitmq
-    restart: always
+    restart: on-failure
 
   react-app-service:
     build: './bike_weather_dashboard_service'
@@ -81,8 +96,12 @@ services:
       - "3000:3000"
     networks:
       - app-network
+    depends_on:
+      - consul
+      - rabbitmq
     volumes:
       - react_data:/usr/src/app
+    restart: on-failure
 
 volumes:
   mongo_data:

@@ -124,7 +124,6 @@ async function processMessages() {
   });
 }
 
-// processMessages();
 
 const express = require("express");
 const app = express();
@@ -144,4 +143,5 @@ app.get("/data", async (req, res) => {
 
 app.listen(port, () => {
   console.log(`DataAggregatorService listening on port ${port}`);
+  processMessages();
 });

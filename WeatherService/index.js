@@ -17,10 +17,10 @@ const sendQueue = 'weatherData';
 consul.agent.service.register({
   id: serviceId,
   name: serviceName,
-  address: 'weather-service',
+  address: serviceName,
   port: port,
   check: {
-    http: `http://weather-service:${port}/health`,
+    http: `http://${serviceName}:${port}/health`,
     interval: '10s'
   }
 }, err => {
@@ -81,8 +81,6 @@ async function processMessages() {
   });
 }
 
-processMessages();
-
 
 const express = require('express');
 const app = express();
@@ -93,4 +91,5 @@ app.get('/health', (req, res) => {
 
 app.listen(port, () => {
   console.log(`WeatherService listening on port ${port}`);
+  processMessages();
 });
